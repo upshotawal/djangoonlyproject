@@ -1,0 +1,39 @@
+{% extends 'main/base.html' %} {% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-7 card mb-5 mt-3 left top">
+      <div class="card-body">
+        <h1>{% block title %} {{ product.title }} {% endblock title %}</h1>
+        <hr />
+        <img
+          src="{{product.image.url}}"
+          alt="{{paroduct.title}}"
+          width="100%"
+          height="500"
+        />
+        <br /><br />
+        <h4 class="text-muted text-center">{{product.title}}</h4>
+        <br /><br />
+        <ul>
+          <li>Author: {{product.author}} &#10004;</li>
+          <br />
+          <li>Discription: {{product.description}}</li>
+          <br />
+          <li>Price: {{product.price}}</li>
+          <br />
+          <li>Product Avilability: {{product.instock}} &#10004;</li>
+          <br />
+        </ul>
+        <br />
+        <h3>
+          <i class="fa fa-clock-o" aria-hidden="true">{{product.updated}}</i>:
+        </h3>
+        <br />
+        <p class="card-text">{{ product.content}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
