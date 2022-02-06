@@ -43,7 +43,7 @@ class Products(models.Model):
     updated = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        verbose_name_plural = 'Productes'
+        verbose_name_plural = 'Products'
         ordering = ('-created',)
 
     def __str__(self):

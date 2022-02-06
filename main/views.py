@@ -1,3 +1,5 @@
+from pickle import GET
+from turtle import title
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.forms import inlineformset_factory
@@ -13,6 +15,34 @@ from .forms import CreateUserForm
 
 
 # Create your views here.
+def index(request):
+    if 'q' in request.GET:
+        q = request.GET['q']
+        products = Products.objects.filter(title__icontains=q)
+    else:
+        products = Products.objects.all()
+    return render(request, "main/home.html", {"products": products})
+
+
+def product(request):
+    products = Products.objects.all()
+    return render(request, "main/product.html", {"products": products})
+
+
+def item(request):
+    items = Item.objects.all()[1:100]
+    return render(request, "main/item.html", {"items": items})
+
+
+def product_details(request, slug):
+    # using Django ORM to query database with .get(slug=slug) code
+    product = Products.objects.get(slug=slug)
+    return render(request, "main/product_detail.html", {"product": product})
+
+
+def checkout(request):
+    return render(request, "main/checkout.html",)
+
 
 def registerPage(request):
     if request.user.is_authenticated:
@@ -135,18 +165,3 @@ def logoutUser(request):
 
 # 	context = {'item':order}
 # 	return render(request, 'accounts/delete.html', context)
-
-def index(request):
-    products = Products.objects.all()
-    return render(request, "main/home.html", {"products": products})
-
-
-def product(request):
-    products = Products.objects.all()
-    return render(request, "main/product.html", {"products": products})
-
-
-def product_details(request, slug):
-    # using Django ORM to query database with .get(slug=slug) code
-    product = Products.objects.get(slug=slug)
-    return render(request, "main/product_detail.html", {"product": product})

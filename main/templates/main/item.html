@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %} {% block content %}
+
+<section class="main_heading my-5">
+  <div class="container">
+    <div class="text-left">
+      <h1 class="display-6">All Products</h1>
+      <hr class="w-100 mx-auto" />
+    </div>
+  </div>
+  <div class="container">
+    <div class="col-md-12">
+      <div class="row">
+        {% for item in items %}
+
+        <div class="card" style="width: 18rem" style="padding: 20px">
+          <div class="card-body">
+            <h5 class="card-title">ProductId :{{item.InvoiceNo}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+              Quantity :{{item.Quantity}}
+            </h6>
+
+            <p class="card-text">{{item.Description }}</p>
+            <a href="#" class="card-link">Shop Now</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock%}

@@ -28,7 +28,7 @@
 
 .bott {
     display: inline-block;
-    background: #ff523b;
+    background: #3b7260;
     color: #fff;
     padding: 8px 30px;
     margin: 30px 0;
@@ -37,7 +37,7 @@
 }
 
 .bott:hover {
-    background: #563434;
+    background: #ff0000;
 }
 
 
@@ -69,7 +69,7 @@
 /* Footer CSS */
 
 .footer__container {
-    background-color: rgb(43, 8, 8);
+    background-color: rgb(102, 235, 206);
     padding: 5rem 0;
     display: flex;
     flex-direction: column;

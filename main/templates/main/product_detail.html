@@ -30,6 +30,9 @@
           <i class="fa fa-clock-o" aria-hidden="true">{{product.updated}}</i>:
         </h3>
         <br />
+        <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg btn-block"
+          >Buy Now
+        </a>
         <p class="card-text">{{ product.content}}</p>
       </div>
     </div>
