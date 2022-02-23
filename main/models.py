@@ -1,9 +1,14 @@
+from ast import Delete
+from pydoc import classname
+from pyexpat import model
+from statistics import mode
 from tkinter.tix import Tree
 from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.translation import gettext as _
+# from pyparsing import delimited_list
 
 # Create your models here.
 STATUS = (
@@ -48,6 +53,49 @@ class Products(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Customer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+
+
+def __str__(self):
+    return str(self.id)
+
+
+class Carts(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        verbose_name_plural = 'cart'
+
+    def __str__(self):
+        return str(self.id)
+
+
+STATUS_CHOICES = (
+    ('Accepted', 'Accepted'),
+    ('Packed', 'Packed'),
+    ('On the Way', 'On the Way'),
+    ('Delivered', 'Delivered'),
+    ('Canceled', 'Canceled'),
+)
+
+
+class OrderPlaced(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    ordered_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=50, choices=STATUS_CHOICES, default="Pending")
+
+    class Meta:
+        verbose_name_plural = 'Orders'
 
 
 class Item(models.Model):

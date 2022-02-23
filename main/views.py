@@ -1,3 +1,6 @@
+import requests
+import json
+from decimal import *
 from pickle import GET
 from turtle import title
 from django.shortcuts import render, redirect
@@ -12,9 +15,16 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import CreateUserForm
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
 
 
 # Create your views here.
+
+
 def index(request):
     if 'q' in request.GET:
         q = request.GET['q']
@@ -42,6 +52,50 @@ def product_details(request, slug):
 
 def checkout(request):
     return render(request, "main/checkout.html",)
+
+
+def khalti(request):
+    return render(request, "main/khalti.html",)
+
+
+def cart(request):
+    products = Products.objects.all()
+    return render(request, "main/cart.html", {"products": products})
+
+
+def add_to_cart(request):
+    user = request.user
+    product_id = request.GET.get('prod_id')
+    product = Products.objects.get(id=product_id)
+    Carts(user=user, product=product).save()
+
+    return redirect('/cart')
+
+
+def show_cart(request):
+    if request.user.is_authenticated:
+        user = request.user
+        cart = Carts.objects.filter(user=user)
+        amount = 0.0
+        format(amount, ".0")
+        Decimal(amount)
+        shipping_amount = 100.0
+        total_amount = 0.0
+        cart_product = [p for p in Carts.objects.all() if p.user == user]
+        print(cart_product)
+        if cart_product:
+            for p in cart_product:
+                tempamount = (p.quantity * p.product.price)
+                amount += tempamount
+                totalamount = amount + shipping_amount
+
+        return render(request, "main/cart.html", {"carts": cart, 'totalamount': totalamount, 'amount': amount})
+    else:
+        return render(request, 'main/emptycart.html')
+
+
+def updateItem(request):
+    return JsonResponse('ietm was added', safe=False)
 
 
 def registerPage(request):
@@ -165,3 +219,36 @@ def logoutUser(request):
 
 # 	context = {'item':order}
 # 	return render(request, 'accounts/delete.html', context)
+
+
+@csrf_exempt
+def verify_payment(request):
+    data = request.POST
+    product_id = data['product_identity']
+    token = data['token']
+    amount = data['amount']
+
+    url = "https://khalti.com/api/v2/payment/verify/"
+    payload = {
+        "token": token,
+        "amount": amount
+    }
+    headers = {
+        "Authorization": "Key test_secret_key_dd9644e41839430a8e9e71627b23ce6b"
+    }
+
+    response = requests.post(url, payload, headers=headers)
+
+    response_data = json.loads(response.text)
+    status_code = str(response.status_code)
+
+    if status_code == '400':
+        response = JsonResponse(
+            {'status': 'false', 'message': response_data['detail']}, status=500)
+        return response
+
+    import pprint
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(response_data)
+
+    return JsonResponse(f"Payment Done !! With IDX. {response_data['user']['idx']}", safe=False)
