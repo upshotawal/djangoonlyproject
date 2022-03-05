@@ -16,3 +16,9 @@ admin.site.register(Carts)
 
 admin.site.register(Customer)
 admin.site.register(OrderPlaced)
+
+class Media:
+    js = (
+        '//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js',  # jquery
+        'js/myscript.js',       # project static folder
+    )

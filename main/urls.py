@@ -14,8 +14,12 @@ urlpatterns = [
 
     path("products/", views.product, name="product"),
     path("items/", views.item, name="item"),
+    path("khalti/", views.khalti, name="khalti"),
+    path("pluscart/", views.plus_cart),
+    path("minuscart/", views.minus_cart),
+    path("removecart/", views.remove_cart),
 
     path('products/<slug:slug>/', views.product_details, name='product_detail'),
     path("update_item/", views.updateItem, name="update_item"),
-    path('api/verify_payment', views.verify_payment, name='verify_payment'),
+    path('verify_payment', views.verify_payment, name='verify_payment'),
 ]
