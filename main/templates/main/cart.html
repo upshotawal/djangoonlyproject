@@ -17,7 +17,7 @@
                   data-mdb-ripple-color="light"
                 >
                   <img
-                    src="{{cart.product.image.url}}"
+                    src="{{cart.product.image.url}}"                
                     class="w-100"
                     alt="##############"
                   />
@@ -70,14 +70,23 @@
 
                   <div class="form-outline">
                     <input id="form1" min="0" name="quantity"
-                    value={{"cart.quantity"}} type="number" class="form-control"
+                    value={{cart.quantity}} type="number" class="form-control"
                     />
                     <label class="form-label" for="form1"
-                      >{{cart.product.description}}</label
-                    >
+                      >{{cart.product.description}}
+                      </label>
                   </div>
 
-                  <a class="plus-cart" onclick="fontbig()" pid="{{cart.product.id}}">+</a>
+                  
+                    <button
+                      class="plus-cart btn"
+                      class="btn btn-primary px-3 me-2"
+                      onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
+                      pid="{{carts.product.id}}"
+                    >
+                      <i class="fas fa-plus"></i>
+                  </button>
+                  
                 <!-- Quantity -->
 
                 <!-- Price -->
@@ -122,8 +131,10 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card mb-4">
+      <div class = "container">
+        
+          <div class="col-md-4">
+          <div class="card mb-4">
           <div class="card-header py-3">
             <h5 class="mb-0">Summary</h5>
           </div>
@@ -161,6 +172,8 @@
             >
           </div>
         </div>
+      
+      </div>
       </div>
     </div>
   </div>

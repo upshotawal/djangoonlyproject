@@ -21,9 +21,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from django.db.models import Q
+import joblib
 
 
 # Create your views here.
+
+def result(request):
+    cls1 = joblib.load('ml_recommendor_model.joblib')
+    #cls2 = joblib.load('ml_recommendor.joblib')
+
+    ans = cls1.show_recommendations("cream")
+    return request(request, "result.html", {'ans': ans})
 
 
 def index(request):
@@ -35,6 +43,7 @@ def index(request):
     return render(request, "main/home.html", {"products": products})
 
 
+@login_required(login_url='login')
 def product(request):
     if 'q' in request.GET:
         q = request.GET['q']
@@ -45,17 +54,20 @@ def product(request):
     return render(request, "main/product.html", {"products": products})
 
 
+@login_required(login_url='login')
 def item(request):
     items = Item.objects.all()[1:100]
     return render(request, "main/item.html", {"items": items})
 
 
+@login_required(login_url='login')
 def product_details(request, slug):
     # using Django ORM to query database with .get(slug=slug) code
     product = Products.objects.get(slug=slug)
     return render(request, "main/product_detail.html", {"product": product})
 
 
+@login_required(login_url='login')
 def checkout(request):
     return render(request, "main/checkout.html",)
 
@@ -64,11 +76,13 @@ def khalti(request):
     return render(request, "main/khalti.html",)
 
 
+@login_required(login_url='login')
 def cart(request):
     products = Products.objects.all()
     return render(request, "main/cart.html", {"products": products})
 
 
+@login_required(login_url='login')
 def add_to_cart(request):
     user = request.user
     product_id = request.GET.get('prod_id')
@@ -78,6 +92,7 @@ def add_to_cart(request):
     return redirect('/cart')
 
 
+@login_required(login_url='login')
 def show_cart(request):
     if request.user.is_authenticated:
         user = request.user
@@ -177,86 +192,6 @@ def loginPage(request):
 def logoutUser(request):
     logout(request)
     return redirect('login')
-
-
-# @login_required(login_url='login')
-# def home(request):
-# 	orders = Order.objects.all()
-# 	customers = Customer.objects.all()
-
-# 	total_customers = customers.count()
-
-# 	total_orders = orders.count()
-# 	delivered = orders.filter(status='Delivered').count()
-# 	pending = orders.filter(status='Pending').count()
-
-# 	context = {'orders':orders, 'customers':customers,
-# 	'total_orders':total_orders,'delivered':delivered,
-# 	'pending':pending }
-
-# 	return render(request, 'accounts/dashboard.html', context)
-
-# @login_required(login_url='login')
-# def products(request):
-# 	products = Product.objects.all()
-
-# 	return render(request, 'accounts/products.html', {'products':products})
-
-# @login_required(login_url='login')
-# def customer(request, pk_test):
-# 	customer = Customer.objects.get(id=pk_test)
-
-# 	orders = customer.order_set.all()
-# 	order_count = orders.count()
-
-# 	myFilter = OrderFilter(request.GET, queryset=orders)
-# 	orders = myFilter.qs
-
-# 	context = {'customer':customer, 'orders':orders, 'order_count':order_count,
-# 	'myFilter':myFilter}
-# 	return render(request, 'accounts/customer.html',context)
-
-# @login_required(login_url='login')
-# def createOrder(request, pk):
-# 	OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=10 )
-# 	customer = Customer.objects.get(id=pk)
-# 	formset = OrderFormSet(queryset=Order.objects.none(),instance=customer)
-# 	# form = OrderForm(initial={'customer':customer})
-# 	if request.method == 'POST':
-# 		# print('Printing POST:', request.POST)
-# 		form = OrderForm(request.POST)
-# 		formset = OrderFormSet(request.POST, instance=customer)
-# 		if formset.is_valid():
-# 			formset.save()
-# 			return redirect('/')
-
-# 	context = {'form':formset}
-# 	return render(request, 'accounts/order_form.html', context)
-
-# @login_required(login_url='login')
-# def updateOrder(request, pk):
-
-# 	order = Order.objects.get(id=pk)
-# 	form = OrderForm(instance=order)
-
-# 	if request.method == 'POST':
-# 		form = OrderForm(request.POST, instance=order)
-# 		if form.is_valid():
-# 			form.save()
-# 			return redirect('/')
-
-# 	context = {'form':form}
-# 	return render(request, 'accounts/order_form.html', context)
-
-# @login_required(login_url='login')
-# def deleteOrder(request, pk):
-# 	order = Order.objects.get(id=pk)
-# 	if request.method == "POST":
-# 		order.delete()
-# 		return redirect('/')
-
-# 	context = {'item':order}
-# 	return render(request, 'accounts/delete.html', context)
 
 
 @csrf_exempt
