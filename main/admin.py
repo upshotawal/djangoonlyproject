@@ -7,6 +7,7 @@ from .models import Item
 from .models import Carts
 from .models import OrderPlaced
 from .models import Customer
+from .models import UserInfo
 
 
 admin.site.register(Products)
@@ -16,6 +17,8 @@ admin.site.register(Carts)
 
 admin.site.register(Customer)
 admin.site.register(OrderPlaced)
+admin.site.register(UserInfo)
+
 
 class Media:
     js = (

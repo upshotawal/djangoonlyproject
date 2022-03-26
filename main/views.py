@@ -69,7 +69,20 @@ def product_details(request, slug):
 
 @login_required(login_url='login')
 def checkout(request):
-    return render(request, "main/checkout.html",)
+    user = request.user
+    add = Customer.objects.filter(user=user)
+    cart_items = Carts.objects.filter(user=user)
+    amount = 0.0
+    shipping_amount = 100.0
+    totalamonunt = 0.0
+    cart_product = [p for p in Carts.objects.all() if p.user ==
+                    request.user]
+    if cart_product:
+        for p in cart_product:
+            tempamount = float(p.quantity * p.product.price)
+            amount += tempamount
+        totalamount = amount+shipping_amount
+    return render(request, "main/checkout.html", {'add': add, 'totalamount': totalamount, 'cart_items': cart_items})
 
 
 def khalti(request):
@@ -98,8 +111,6 @@ def show_cart(request):
         user = request.user
         cart = Carts.objects.filter(user=user)
         amount = 0.0
-        # format(amount, ".0")
-        # Decimal(amount)
         shipping_amount = 100.0
 
         cart_product = [p for p in Carts.objects.all() if p.user == user]
@@ -128,23 +139,58 @@ def plus_cart(request):
         for p in cart_product:
             tempamount = float(p.quantity * p.product.price)
             amount += tempamount
-            totalamount = amount + shipping_amount
 
         data = {
             'quantity': c.quantity,
             'amount': amount,
-            'totalamount': totalamount
+            'totalamount': amount + shipping_amount
 
         }
         return JsonResponse(data)
 
 
 def minus_cart(request):
-    return render
+    if request.method == 'GET':
+        prod_id = request.GET['prod_id']
+        c = Carts.objects.get(Q(product=prod_id) & Q(user=request.user))
+        c.quantity -= 1
+        c.save()
+        amount = 0.0
+        shipping_amount = 100.0
+        cart_product = [p for p in Carts.objects.all() if p.user ==
+                        request.user]
+        for p in cart_product:
+            tempamount = float(p.quantity * p.product.price)
+            amount += tempamount
+
+        data = {
+            'quantity': c.quantity,
+            'amount': amount,
+            'totalamount': amount + shipping_amount
+
+        }
+        return JsonResponse(data)
 
 
 def remove_cart(request):
-    return render
+    if request.method == 'GET':
+        prod_id = request.GET['prod_id']
+        c = Carts.objects.get(Q(product=prod_id) & Q(user=request.user))
+        c.delete()
+        amount = 0.0
+        shipping_amount = 100.0
+        cart_product = [p for p in Carts.objects.all() if p.user ==
+                        request.user]
+        for p in cart_product:
+            tempamount = float(p.quantity * p.product.price)
+            amount += tempamount
+
+        data = {
+            'amount': amount,
+            'totalamount': amount + shipping_amount
+
+        }
+        return JsonResponse(data)
 
 
 def updateItem(request):
@@ -204,7 +250,7 @@ def verify_payment(request):
     url = "https://khalti.com/api/v2/payment/verify/"
     payload = {
         "token": token,
-        "amount": amount
+        "amount": amount,
     }
     headers = {
         "Authorization": "Key test_secret_key_dd9644e41839430a8e9e71627b23ce6b"

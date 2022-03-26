@@ -1,4 +1,44 @@
 {% extends 'main/base.html' %} {% load static %} {% block content %}
+<div class="container">
+  <div class="row mt-5">
+   <div class="col-sm-6">
+     <h4>Order Summary</h4>
+     <hr>
+     {%for item in cart_items%}
+       <div class="card mb-2">
+         <div class="card-body">
+           <h5>Product: {{item.product.title}}</h5>
+           <p>Quantity: {{item.quantity}}</p>
+           <p class="fw-bold">Price: </p>
+         </div>
+       </div>
+       {%endfor%}
+     <small>Term and Condition: Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, ullam saepe! Iure optio repellat dolor velit, minus rem. Facilis cumque neque numquam laboriosam, accusantium adipisci nisi nihil in et quis?</small>
+   </div>
+   <div class="col-sm-4 offset-sm-1">
+     <h4>Select Shipping Address</h4>
+     <hr>
+     <form action="">
+       {% for ad in add %}
+       <div class="card">
+         <div class="card-body">
+         <h5>{{ad.name}}</h5>
+         <p>{{ad.adderess}}</p>
+         </div>
+       </div>
+         <div class="form-check mt-2 mb-5">
+           <input class="form-check-input" type="radio" value="">
+           <label class="form-check-label fw-bold" for="">
+             Address: {{forloop.counter}} </label>
+         </div>
+         {%endfor%}
+         <div class="text-end">
+           <button type="submit" class="btn btn-warning mt-3 px-5 fw-bold">Continue</button>
+         </div>
+       </form>
+     </div>
+   </div>
+ </div>
 </br>
 </br>
 </br>
@@ -75,6 +115,7 @@
               </div>
             </form>
           </div>
+          {% csrf_token %}
           <div class="col-md-8 order-md-1">
             <h4 class="mb-3">Billing address</h4>
             <form class="needs-validation" novalidate>
@@ -157,17 +198,7 @@
                 </div>
               </div>
 
-              <div class="mb-3">
-                <label for="address2"
-                  >Address 2 <span class="text-muted">(Optional)</span></label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="address2"
-                  placeholder="Apartment or suite"
-                />
-              </div>
+            
 
               <div class="row">
                 <div class="col-md-5 mb-3">
@@ -270,7 +301,7 @@
                     required
                   />
                   <label class="custom-control-label" for="paypal"
-                    >PayPal</label
+                    >Khalti</label
                   >
                 </div>
               </div>
@@ -328,7 +359,9 @@
                 </div>
               </div>
               <hr class="mb-4" />
-              <button id="payment-button" class="btn btn-primary btn-lg btn-block">Pay with Khalti</button>
+              <a href="{% url 'khalti' %}" class="btn btn-primary "
+              >Continue</a>
+              
           
             </form>
           </div>
@@ -338,58 +371,8 @@
 </br>
 </br>
 </br>
-  {% endblock%}
+{% endblock%}
 
-  {% block extrajs %}
-  
-  <script>
-    
-    function verifyPayment(payload) {
-      $.ajax({
-          url: "{% url 'verify_payment' %}",
-          type: "POST",
-          data: payload,
-          dataType: 'json',
-          success: function (response) { alert(response) },
-          error: function (error) { alert(error.responseJSON['message']) }
-      });
-  }
 
-  var config = {
-      "publicKey": "test_secret_key_dd9644e41839430a8e9e71627b23ce6b",
-      "productIdentity": "1234567890",
-      "productName": "Dragon",
-      "productUrl": "http://gameofthrones.wikia.com/wiki/Dragons",
-      "paymentPreference": [
-      "KHALTI",
-      "EBANKING",
-      "MOBILE_BANKING",
-      "CONNECT_IPS",
-      "SCT",
-      ],
-      "eventHandler": {
-          onSuccess(payload) {
-              console.log(payload);
-              verifyPayment(payload)
-          },
-          onError(error) {
-              console.log(error);
-          },
-          onClose() {
-              console.log('widget is closing');
-          }
-      }
-  };
-
-  var checkout = new KhaltiCheckout(config);
-  var btn = document.getElementById("payment-button");
-  btn.onclick = function () {
-      checkout.show({ amount: 1000 });
-  }
-</script>
-  
-  
-
-{% endblock %} 
 
  

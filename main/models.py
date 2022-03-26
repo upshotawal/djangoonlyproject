@@ -1,4 +1,5 @@
 from ast import Delete
+from itertools import chain
 from pydoc import classname
 from pyexpat import model
 from statistics import mode
@@ -8,7 +9,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.translation import gettext as _
-# from pyparsing import delimited_list
+
 
 # Create your models here.
 STATUS = (
@@ -96,6 +97,28 @@ class OrderPlaced(models.Model):
 
     class Meta:
         verbose_name_plural = 'Orders'
+
+
+ORDER_CHOICES = (
+    ('Credit Card', 'Credit Card'),
+    ('Debit Card', 'Debit Card'),
+    ('Khalti', 'Khalti'),
+)
+
+
+class UserInfo(models.Model):
+    fname = models.CharField(max_length=150)
+    lname = models.CharField(max_length=150)
+    uname = models.CharField(max_length=150)
+    email = models.EmailField(max_length=150)
+    adderess = models.CharField(max_length=200)
+    payment = models.CharField(
+        max_length=50, choices=ORDER_CHOICES, default="Payment"
+    )
+    cname = models.CharField(max_length=120)
+    cnum = models.IntegerField(default=0000)
+    exp = models.IntegerField(default=0000000)
+    CVV = models.IntegerField(default=000)
 
 
 class Item(models.Model):
